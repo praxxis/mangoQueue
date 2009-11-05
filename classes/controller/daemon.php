@@ -26,7 +26,9 @@ class Controller_Daemon extends Controller_CLI {
 	protected $_pids = array();
 
 	/*
-	 * Forks into background and initializes daemon
+	 * Run daemon
+	 *
+	 * php index.php --uri=daemon
 	 */
 	public function action_index($config = 'default')
 	{
@@ -43,6 +45,7 @@ class Controller_Daemon extends Controller_CLI {
 		{
 			// Fork successful - exit parent (daemon continues in child)
 			Kohana::$log->add('debug', 'Queue. Daemon created succesfully at: ' . $pid);
+			file_put_contents( $this->_config['pid_path'], $pid);
 			exit;
 		}
 		else
@@ -62,6 +65,58 @@ class Controller_Daemon extends Controller_CLI {
 			// run daemon
 			$this->daemon();
 		}
+	}
+
+	/*
+	 * Exit daemon (if running)
+	 *
+	 * php index.php --uri=daemon/exit
+	 */
+	public function action_exit()
+	{
+		if ( file_exists( $this->_config['pid_path']))
+		{
+			$pid = file_get_contents($this->_config['pid_path']);
+
+			if ( $pid !== 0)
+			{
+				Kohana::$log->add('debug','Sending SIGTERM to pid ' . $pid);
+				echo 'Sending SIGTERM to pid ' . $pid . PHP_EOL;
+
+				posix_kill($pid, SIGTERM);
+
+				if ( posix_get_last_error() ===0)
+				{
+					echo "Signal send SIGTERM to pid ".$pid.PHP_EOL;
+				}
+				else
+				{
+					echo "An error occured, removing file".PHP_EOL;
+					unlink($this->_config['pid_path']);
+				}
+			}
+			else
+			{
+				Kohana::$log->add("debug", "Could not find MangoQueue pid in file :".$this->_config['pid_path']);
+				echo "Could not find task_queue pid in file :".$this->_config['pid_path'].PHP_EOL;
+			}
+		}
+		else
+		{
+			Kohana::$log("error", "MangoQueue pid file ".$this->_config['pid_path']." does not exist");
+			echo "MangoQueue pid file ".$this->_config['pid_path']." does not exist".PHP_EOL;
+		}
+	}
+
+	/*
+	 * Get daemon & queue status
+	 *
+	 * php index.php --uri=daemon/status
+	 */
+	public function action_status()
+	{
+		echo 'MangoQueue is ' . (file_exists($this->_config['pid_path']) ? '' : 'NOT ') . 'running' . PHP_EOL;
+		echo 'Currently: ' . Mango::factory('task')->db()->count('tasks') . ' in queue'.PHP_EOL;
 	}
 
 	/*

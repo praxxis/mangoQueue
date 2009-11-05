@@ -8,7 +8,10 @@ return array(
 		'max' => 4,
 
 		// Sleep time (in microseconds) when there's no active task
-		'sleep' => 5000000 // 5 seconds
+		'sleep' => 5000000, // 5 seconds
+
+		// save the PID in this file/location
+		'pid_path' => '/var/log/mongoQueue.pid'
 	)
 
 );
