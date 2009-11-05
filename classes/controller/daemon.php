@@ -109,11 +109,11 @@ class Controller_Daemon extends Controller_CLI {
 					catch(Exception $e)
 					{
 						// Task failed - log message
-						Kohana::$log->add('error', 'Queue. Task failed - route: :route, uri: :uri, msg: :msg', array(
+						Kohana::$log->add('error', strtr('Queue. Task failed - route: :route, uri: :uri, msg: :msg', array(
 							':route' => $task->route,
 							':uri'   => http_build_query($task->uri->as_array()),
 							':msg'   => $e->getMessage()
-						));
+						)));
 					}
 
 					// Remove task from queue
