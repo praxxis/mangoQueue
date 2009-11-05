@@ -19,6 +19,9 @@ class Controller_Daemon extends Controller_CLI {
 		pcntl_signal(SIGCHLD, array($this, 'sig_handler'));
 		pcntl_signal(SIGTERM, array($this, 'sig_handler'));
 		declare(ticks = 1);
+
+		// Load config
+		$this->_config = Kohana::config('daemon')->$config;
 	}
 
 	protected $_config;
@@ -51,7 +54,6 @@ class Controller_Daemon extends Controller_CLI {
 		else
 		{
 			// Background process - run daemon
-			$this->_config = Kohana::config('daemon')->$config;
 
 			Kohana::$log->add('debug',strtr('Queue. Config :config loaded, max: :max, sleep: :sleep', array(
 				':config' => $config,
