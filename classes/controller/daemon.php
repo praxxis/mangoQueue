@@ -131,8 +131,15 @@ class Controller_Daemon extends Controller_CLI {
 	 */
 	public function action_status()
 	{
-		echo 'MangoQueue is ' . (file_exists($this->_config['pid_path']) ? '' : 'NOT ') . 'running' . PHP_EOL;
-		echo 'Currently: ' . Mango::factory('task')->db()->count('tasks') . ' in queue'.PHP_EOL;
+		$pid = file_exists($this->_config['pid_path'])
+			? file_get_contents($this->_config['pid_path'])
+			: FALSE;
+
+		echo $pid
+			? 'MangoQueue is running at PID: ' . $pid . PHP_EOL
+			: 'MangoQueue is NOT running' . PHP_EOL;
+
+		echo 'MangoQueue has ' . Mango::factory('task')->db()->count('tasks') . ' tasks in queue'.PHP_EOL;
 	}
 
 	/*
