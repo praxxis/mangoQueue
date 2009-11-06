@@ -21,6 +21,13 @@ class Controller_Daemon extends Controller_CLI {
 		declare(ticks = 1);
 
 		// Load config
+		$params = $this->request->param();
+
+		// First key is config
+		$config = count($params)
+			? reset($params)
+			: 'default';
+
 		$this->_config = Kohana::config('daemon')->$config;
 	}
 
@@ -33,7 +40,7 @@ class Controller_Daemon extends Controller_CLI {
 	 *
 	 * php index.php --uri=daemon
 	 */
-	public function action_index($config = 'default')
+	public function action_index()
 	{
 		// fork into background
 		$pid = pcntl_fork();
