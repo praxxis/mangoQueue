@@ -29,6 +29,13 @@ class Controller_Daemon extends Controller_CLI {
 			: 'default';
 
 		$this->_config = Kohana::config('daemon')->$config;
+
+		if ( empty($this->_config))
+		{
+			Kohana::$log->add('error', 'Queue. Config not found ("daemon.' . $config . '"). Exiting.');
+			echo 'Queue. Config not found ("daemon.' . $config . '"). Exiting.' . PHP_EOL;
+			exit;
+		}
 	}
 
 	protected $_config;
