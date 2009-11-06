@@ -10,7 +10,7 @@ return array(
 		// Sleep time (in microseconds) when there's no active task
 		'sleep' => 5000000, // 5 seconds
 
-		// save the PID in this file/location
+		// save the PID file in this location
 		'pid_path' => '/tmp/'
 	)
 

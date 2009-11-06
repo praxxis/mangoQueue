@@ -37,7 +37,7 @@ class Controller_Daemon extends Controller_CLI {
 			exit;
 		}
 
-		$this->_config['pid_path'] . 'MangoQueue.' . $config . '.pid';
+		$this->_config['pid_path'] = $this->_config['pid_path'] . 'MangoQueue.' . $config . '.pid';
 	}
 
 	protected $_config;
