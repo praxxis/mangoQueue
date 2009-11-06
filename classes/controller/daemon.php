@@ -36,6 +36,8 @@ class Controller_Daemon extends Controller_CLI {
 			echo 'Queue. Config not found ("daemon.' . $config . '"). Exiting.' . PHP_EOL;
 			exit;
 		}
+
+		$this->_config['pid_path'] . 'MangoQueue.' . $config . '.pid';
 	}
 
 	protected $_config;
@@ -231,6 +233,8 @@ class Controller_Daemon extends Controller_CLI {
 
 		// Remove PID file
 		unlink($this->_config['pid_path']);
+
+		echo 'MangoQueue exited' . PHP_EOL;
 	}
 
 	/*

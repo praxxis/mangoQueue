@@ -11,7 +11,7 @@ return array(
 		'sleep' => 5000000, // 5 seconds
 
 		// save the PID in this file/location
-		'pid_path' => '/tmp/mangoqueue.pid'
+		'pid_path' => '/tmp/'
 	)
 
 );
