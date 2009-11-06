@@ -93,7 +93,7 @@ class Controller_Daemon extends Controller_CLI {
 				}
 				else
 				{
-					echo "An error occured, removing file".PHP_EOL;
+					echo "An error occured while sending SIGTERM".PHP_EOL;
 					unlink($this->_config['pid_path']);
 				}
 			}
@@ -207,6 +207,9 @@ class Controller_Daemon extends Controller_CLI {
 		{
 			Kohana::$log('error','Queue. Could not kill all children');
 		}
+
+		// Remove PID file
+		unlink($this->_config['pid_path']);
 	}
 
 	/*
@@ -217,7 +220,7 @@ class Controller_Daemon extends Controller_CLI {
 		foreach ($this->_pids as $pid => $time)
 		{
 			posix_kill($pid, SIGTERM);
-			usleep(500);
+			usleep(1000);
 		}
 
 		return count($this->_pids) === 0;
