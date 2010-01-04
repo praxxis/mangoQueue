@@ -24,23 +24,24 @@ class Controller_Daemon extends Controller_CLI {
 		$params = $this->request->param();
 
 		// First key is config
-		$config = count($params)
-			? reset($params)
-			: 'default';
+		$this->_config_name = count($params)
+								? reset($params)
+								: 'default';
 
 		$this->_config = Kohana::config('daemon')->$config;
 
 		if ( empty($this->_config))
 		{
-			Kohana::$log->add('error', 'Queue. Config not found ("daemon.' . $config . '"). Exiting.');
-			echo 'Queue. Config not found ("daemon.' . $config . '"). Exiting.' . PHP_EOL;
+			Kohana::$log->add('error', 'Queue. Config not found ("daemon.' . $this->_config_name . '"). Exiting.');
+			echo 'Queue. Config not found ("daemon.' . $this->_config_name . '"). Exiting.' . PHP_EOL;
 			exit;
 		}
 
-		$this->_config['pid_path'] = $this->_config['pid_path'] . 'MangoQueue.' . $config . '.pid';
+		$this->_config['pid_path'] = $this->_config['pid_path'] . 'MangoQueue.' . $this->_config_name . '.pid';
 	}
 
 	protected $_config;
+	protected $_config_name;
 	protected $_sigterm;
 	protected $_pids = array();
 
@@ -72,7 +73,7 @@ class Controller_Daemon extends Controller_CLI {
 			// Background process - run daemon
 
 			Kohana::$log->add('debug',strtr('Queue. Config :config loaded, max: :max, sleep: :sleep', array(
-				':config' => $config,
+				':config' => $this->_config_name,
 				':max'    => $this->_config['max'],
 				':sleep'  => $this->_config['sleep']
 			)));
